@@ -69,7 +69,7 @@ export default function StackedGraph(props: { parameters: curveArr }) {
         data: CO2Data,
       };
       chartData.push(obj);
-      console.log(chartData.length + " " + parameterData.length);
+
       if (chartData.length == parameterData.length) {
         setCount(count + 1);
       }

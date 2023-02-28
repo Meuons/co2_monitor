@@ -11,45 +11,34 @@ import { prototype } from "apexcharts";
 
 export default function Curve(props: { parameters: curveArr}) {
   const parameterData = props.parameters;
-console.log(JSON.stringify(parameterData))
+
 
   const getData = (url: string, callback: any) => {
     axios
-      .get(url)
-      .then((res) => callback({ data: res.data }))
-      .catch((err) => callback({ error: err }));
+        .get(url)
+        .then((res) => callback({ data: res.data }))
+        .catch((err) => callback({ error: err }));
   };
 
 
 
 
-  const [isLoading, setIsLoading] = useState(true);
+
   const [count, setCount] = useState(0);
-  const degree = useState(2);
-  const [domain, setDomain] = useState(0);
-  const [showCurve, setShowCurve] = useState(false);
-  const [regression, setRegression] = useState<{ coefficients: any[] }>(
-    new PolynomialRegression(
-      [50, 50, 50, 70, 70, 70, 80, 80, 80, 90, 90, 90, 100, 100, 100],
-      [
-        3.3, 2.8, 2.9, 2.3, 2.6, 2.1, 2.5, 2.9, 2.4, 3.0, 3.1, 2.8, 3.3, 3.53,
-        3,
-      ],
-      degree
-    )
-  );
-  const [equations, setEquations] = useState<{ fn: string, color: string }[]>([]);
 
 
+  const [equations, setEquations] = useState<{ fn: string, maxY: number, color: string }[]>([]);
+
+  const [yMax, setYmax] = useState(0)
 
   const xValues = (minuteCount: number) => {
     const arr = [];
 
 
 
-      for (let i = 0; i < minuteCount; i++) {
-        arr.push(i);
-      }
+    for (let i = 0; i < minuteCount; i++) {
+      arr.push(i);
+    }
 
 
     return arr;
@@ -61,26 +50,26 @@ console.log(JSON.stringify(parameterData))
   const fetch = () => {
     parameterData.map((item:curveObj, i)=> {
 
-        const url = "https://co2-server-app.herokuapp.com/timestamps/date/" + item.date + "/name/" + item.name
+          const url = "https://co2-server-app.herokuapp.com/timestamps/date/" + item.date + "/name/" + item.name
 
-    getData(url, async (result: any) => {
+          getData(url, async (result: any) => {
 
-      const { data, error } = result;
-      if(data){
+            const { data, error } = result;
+            if(data){
 
-        getY(data.set, item.startHour, item.endHour, i);
-      }
-
-
-      if (error) {
-        // Handle error
-        return;
-      }
-    });
-    }
+              getY(data.set, item.startHour, item.endHour, i);
+            }
 
 
-)
+            if (error) {
+              // Handle error
+              return;
+            }
+          });
+        }
+
+
+    )
   };
 
   const getY = (data: ECO2Arr, start: number, end: number , i: number) => {
@@ -89,9 +78,9 @@ console.log(JSON.stringify(parameterData))
     data.map((item: curveYObj, i) => {
       if (start != null && end != null) {
         if (
-          new Date(item.StampDate).getHours() >
+            new Date(item.StampDate).getHours() >
             start &&
-          new Date(item.StampDate).getHours() < end + 1
+            new Date(item.StampDate).getHours() < end + 1
         ) {
 
           if(item.ECO2 == 0){
@@ -113,33 +102,41 @@ console.log(JSON.stringify(parameterData))
 
 
       equations.push({fn: new PolynomialRegression(x,y,
-          2).toString().slice(6), color: colors[i]}); // Prints a human-readable version of the function.
+            2).toString().slice(6), maxY: Math.max(...y) , color: colors[i]}); // Prints a human-readable version of the function.
 
-      plotGraph(x.length)
-      setCount(count + 1);
+      plotGraph(x.length, Math.max(...equations.map(o => o.maxY)))
+
+
     }
   };
-const plotGraph = (domain: number) => {
+  const plotGraph = (xMax: number, yMax: number) => {
+
+
     if(equations.length > 0){
-console.log(equations)
-    functionPlot({
-      target: "#curve" ,
-      width: 1000,
-      height: 1000,
 
-      yAxis: {
-        label: "y axis",
-        domain: [0, 1000],
-      },
-      xAxis: {
-        label: "x axis",
-        domain: [0, domain],
-      },
-      data: equations,
-      disableZoom: true,
-      grid: true,
-    });
+      functionPlot({
+        target: "#curve" ,
+        width: 700,
+        height: 700,
 
+        yAxis: {
+          label: "y axis",
+          domain: [0, yMax],
+        },
+        xAxis: {
+          label: "x axis",
+          domain: [0, xMax],
+        },
+        data: equations,
+        disableZoom: true,
+        grid: true,
+      });
+
+      if(equations.length == parameterData.length){
+        console.log(equations.length)
+        console.log(parameterData.length)
+setCount(count +1)
+      }
     }
   }
   useEffect(() => {
@@ -147,10 +144,20 @@ console.log(equations)
   },[])
 
   return (
-    <div>
+      <div style={{  display: 'flex',
+        justifyContent: 'center'}}>
+        <div key={count}>
+          <ul>
+            {equations.map((item: any, i: number) => (
+                <li style={{color: item.color}}>
+                  <span style={{fontSize: 15, color: 'black'}}>{item.fn}</span>
+                </li>
+            ))}
 
-      <div id={"curve"} ></div>
+          </ul>
+        </div>
+        <div id={"curve"} ></div>
 
-    </div>
+      </div>
   );
 }

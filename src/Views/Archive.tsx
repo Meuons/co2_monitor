@@ -76,7 +76,7 @@ export default function Archive() {
 
   const handleStartInput = (hour: number, id: number ) => {
    const arr = selects
-    console.log(hour)
+
     if(arr[id].endHour > hour) {
       arr[id].startHour = hour
       setSelects(arr)
