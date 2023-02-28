@@ -75,8 +75,8 @@ export type ApexLegend = {
 
 export type dateObj = { name: string; date: string };
 export type dateArr = { name: string; date: string }[];
-export type curveArr = { name: string; date: string, startHour: number, endHour: number }[];
-export type curveObj = { name: string; date: string, startHour: number, endHour: number }
+export type curveArr = { name: string; date: string, startHour: number, endHour: number, color: string }[];
+export type curveObj = { name: string; date: string, startHour: number, endHour: number, color: string  }
 export type dataObj = { name: string; data: number[] };
 export type dataNumArr = { name: string; data: number[] }[];
 export type dataPointArr = { name: string; data: { x: number; y: number }[] }[];

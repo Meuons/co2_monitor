@@ -12,11 +12,11 @@ import colors from '../colors'
 export default function Archive() {
   const date = new Date();
   date.setDate(date.getDate() - 1);
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState(1);
   const [curveCount, setCurveCount] = useState(0);
 
   const [selects, setSelects] = useState<curveArr>([
-    { name: "mill_1", date: date.toISOString().split("T")[0], startHour: 8, endHour: 10  },
+    { name: "mill_1", date: date.toISOString().split("T")[0], startHour: 8, endHour: 10, color: '#0000FF'  },
   ]);
 
   const styles: StylesDictionary = {
@@ -118,10 +118,12 @@ export default function Archive() {
     <div style={styles.wrapper}>
       <div style={styles.selectsArea}>
         {selects.map((item, i) => (
+
+
             // @ts-ignore
           <div key={i} style={styles.selectContainer}>
 
-            <div style={{verticalAlign: 'middle', padding: 10, borderBottom: '2px solid' + colors[i]}}>
+            <div style={{verticalAlign: 'middle', padding: 10, borderBottom: '2px solid' + item.color}}>
               <div style={{display: 'flex'}}>
 
               <DatePicker
@@ -176,7 +178,8 @@ export default function Archive() {
               name: "mill_1",
               date: date.toISOString().split("T")[0],
               startHour: 8,
-              endHour: 10
+              endHour: 10,
+              color: colors[count]
             })
           }
         >

@@ -57,7 +57,7 @@ export default function Curve(props: { parameters: curveArr}) {
             const { data, error } = result;
             if(data){
 
-              getY(data.set, item.startHour, item.endHour, i);
+              getY(data.set, item.startHour, item.endHour, i, item.color);
             }
 
 
@@ -72,7 +72,7 @@ export default function Curve(props: { parameters: curveArr}) {
     )
   };
 
-  const getY = (data: ECO2Arr, start: number, end: number , i: number) => {
+  const getY = (data: ECO2Arr, start: number, end: number , i: number, color: string) => {
     const y: number[] = [];
 
     data.map((item: curveYObj, i) => {
@@ -102,7 +102,7 @@ export default function Curve(props: { parameters: curveArr}) {
 
 
       equations.push({fn: new PolynomialRegression(x,y,
-            2).toString().slice(6), maxY: Math.max(...y) , color: colors[i]}); // Prints a human-readable version of the function.
+            2).toString().slice(6), maxY: Math.max(...y) , color: color}); // Prints a human-readable version of the function.
 
       plotGraph(x.length, Math.max(...equations.map(o => o.maxY)))
 
@@ -149,8 +149,8 @@ setCount(count +1)
         <div key={count}>
           <ul>
             {equations.map((item: any, i: number) => (
-                <li style={{color: item.color}}>
-                  <span style={{fontSize: 15, color: 'black'}}>{item.fn}</span>
+                <li style={{color: item.color,  margin: 10,}}>
+                  <span style={{fontSize: 15, color: 'black', borderBottom: '2px solid black'}}>{item.fn}</span>
                 </li>
             ))}
 
