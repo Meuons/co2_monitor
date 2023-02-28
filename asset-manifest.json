@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/co2_front/static/css/main.a32d5103.css",
+    "main.js": "/co2_front/static/js/main.8389612f.js",
+    "static/js/787.aa575a01.chunk.js": "/co2_front/static/js/787.aa575a01.chunk.js",
+    "index.html": "/co2_front/index.html",
+    "main.a32d5103.css.map": "/co2_front/static/css/main.a32d5103.css.map",
+    "main.8389612f.js.map": "/co2_front/static/js/main.8389612f.js.map",
+    "787.aa575a01.chunk.js.map": "/co2_front/static/js/787.aa575a01.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.a32d5103.css",
+    "static/js/main.8389612f.js"
+  ]
+}
