@@ -6,16 +6,16 @@ import {
   ApexCurveType,
   ApexLegend,
   dataPointArr,
-  ECO2Arr,
+  CO2Arr,
 } from "../types";
 import Chart from "react-apexcharts";
-
+import xAxis from "./xAxis";
 import { getData } from "../API/getData";
-import Curve from "./Curve";
-export default function Graph(param: { date: string; name: string}) {
+import { ApexDatetime } from "../types";
+export default function Graph(param: { date: string; room: string}) {
   const [chartData, setChartData] = useState<dataPointArr>([]);
-
-  const [data, setData] = useState<ECO2Arr>([]);
+  const datetime: ApexDatetime = 'datetime'
+  const [roomData, setRoomData] = useState<CO2Arr>([]);
   const sec = new Date().getSeconds();
   const dateTime: ApexXAxisType = "datetime";
   const line: ApexChartType = "line";
@@ -29,14 +29,14 @@ export default function Graph(param: { date: string; name: string}) {
   };
 
   const url =
-    "https://co2-server-app.herokuapp.com/timestamps/date/" +
-    param.date +
-    "/name/" +
-    param.name;
+    "http://localhost:3000/timestamps/date/" +
+    new Date(param.date).toLocaleDateString('en-ca') +
+    "/room/" +
+    param.room;
   const fetch = () => {
     getData(url, async (result: any) => {
       const { data, error } = result;
-      setData(data.set);
+      setRoomData(data);
       if (error) {
         // Handle error
         return;
@@ -45,11 +45,29 @@ export default function Graph(param: { date: string; name: string}) {
   };
   useEffect(() => {
     async function sortData() {
-      if (data) {
+      if (roomData) {
+        const CO2Data: {x: number, y: number}[] = []
+        roomData.map((item, i) => {
+          if (item.ppm_co2 === 0 && i > 0) {
+            item.ppm_co2 = roomData[i - 1].ppm_co2;
+          }
+          const date = new Date(item.time)
+           date.setHours(date.getHours() + 2);
+          const hour = date.getHours()
+
+          if(hour >= 11 && hour <= 18){
+            const obj = {x: date.getTime(), y: item.ppm_co2}
+            CO2Data.push(obj)
+          }
+       
+        });
+
+  
+
         const getMinuteDerivative = (i: number) => {
-          if (i > 0 && i < data.length - 1) {
-            const y1 = data[i - 1].ECO2;
-            const y2 = data[i + 1].ECO2;
+          if (i > 0 && i < roomData.length - 1) {
+            const y1 = roomData[i - 1].ppm_co2;
+            const y2 = roomData[i + 1].ppm_co2;
 
             const Ydiff = y2 - y1;
             const d = Ydiff / 2;
@@ -59,38 +77,27 @@ export default function Graph(param: { date: string; name: string}) {
             return 0;
           }
         };
-        const mapCO2 = async () =>
-          data.map((item, i) => {
-            if (item.ECO2 === 0 && i > 0) {
-              item.ECO2 = data[i - 1].ECO2;
-            }
 
-            const obj = { x: new Date(item.StampDate).getTime(), y: item.ECO2 };
-            return obj;
-          });
         const mapMinuteD = async () =>
-          data.map((item, i) => ({
-            x: new Date(item.StampDate).getTime(),
+        roomData.map((item, i) => ({
+            x: new Date(item.time).getTime(),
             y: Math.round(getMinuteDerivative(i)),
           }));
 
-        const CO2Data = await mapCO2();
+       
         const minuteD = await mapMinuteD();
 
         setChartData([
+      
           {
-            name: "d",
-            data: minuteD,
-          },
-          {
-            name: "ECO2",
+            name: "CO2",
             data: CO2Data,
           },
         ]);
       }
     }
     sortData();
-  }, [data]);
+  }, [roomData]);
 
   useEffect(() => {
     fetch();
@@ -104,7 +111,15 @@ export default function Graph(param: { date: string; name: string}) {
   const options = {
     chart: {
       height: 450,
-      type: line,
+      zoom: {
+        autoScaleYaxis: true,
+      },
+      subtitle: {
+        style: {
+          fontSize: '200px'
+        }
+      },
+
       dropShadow: {
         enabled: true,
         color: "#000",
@@ -117,14 +132,11 @@ export default function Graph(param: { date: string; name: string}) {
         show: true,
       },
     },
-    colors: ["#77B6EA", "#545454"],
-    stroke: {
-      curve: smooth,
-    },
 
     dataLabels: {
       enabled: false,
     },
+
     grid: {
       borderColor: "#e7e7e7",
       row: {
@@ -133,31 +145,27 @@ export default function Graph(param: { date: string; name: string}) {
       },
     },
     xaxis: {
-      type: dateTime,
-      labels: {
-        formatter: function (val: any) {
-          return new Date(val).toLocaleTimeString("sv-SE", {
-            timeZone: "Europe/London",
-            hour: "numeric",
-            minute: "numeric",
-          });
-        },
-      },
-    },
-    yaxis: {
-      title: {
-        text: "PPM ECO2",
-      },
+      type: datetime,
+      categories: xAxis(),
+      tooltip: {
+        enabled: false
+      }
 
-      min: 350,
     },
-    legend: legend,
+    tooltip: {
+      x: {
+        format: "HH:mm",
+        style:{fontSize: '20px'}
+
+      },
+      style:{fontSize: '20px'}
+    },
   };
 
   return (
-    <div style={{ width: "90vw" }}>
+    <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', alignContent: 'center', justifyItems: 'center' }}>
       {chartData.length > 0 ? (
-        <div>
+        <div style={{width: '90vw'}}>
           <Chart
             options={options}
             series={chartData}

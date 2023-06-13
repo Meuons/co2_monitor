@@ -1,5 +1,4 @@
 import * as React from "react";
-import Curve from "./Components/Curve";
 import NavMenu from "./Components/NavMenu";
 
 import StackedGraph from "./Components/StackedGraph";

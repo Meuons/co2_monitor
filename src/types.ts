@@ -81,16 +81,13 @@ export type dataObj = { name: string; data: number[] };
 export type dataNumArr = { name: string; data: number[] }[];
 export type dataPointArr = { name: string; data: { x: number; y: number }[] }[];
 
-export type ECO2Arr = { ECO2: number; DeviceName: string; StampDate: string }[];
-export type deviceObj = {
-  deviceName: string;
-  onlineStatus: number;
-  batteryPer: number;
-  eco2: number;
-  ambientTemp: number;
-  humidity: number;
-  tvoc: number;
+export type CO2Arr = { ppm_co2: number; room: string; time: string }[];
+export type stamp = {
+  time: string;
+  ppm_co2: number;
+  people_amount: number;
+  room: string;
 };
-export type curveYObj = { StampDate: string; ECO2: number };
+export type curveYObj = { time: string; ppm_co2: number };
 export type ApexDatetime = "datetime" | "numeric" | "category" | undefined
 

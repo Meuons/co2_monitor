@@ -16,7 +16,7 @@ export default function Archive() {
   const [curveCount, setCurveCount] = useState(0);
 
   const [selects, setSelects] = useState<curveArr>([
-    { name: "mill_1", date: date.toISOString().split("T")[0], startHour: 8, endHour: 10, color: '#0000FF'  },
+    { name: "room_1", date: date.toISOString().split("T")[0], startHour: 8, endHour: 10, color: '#0000FF'  },
   ]);
 
   const styles: StylesDictionary = {
@@ -137,34 +137,14 @@ export default function Archive() {
                 value={item.name}
                 onChange={(e) => updateSelects(i, e.target.value, false)}
               >
-                <option value="mill_1">Mill_1</option>
-                <option value="mill_2">Mill_2</option>
-                <option value="mill_3">Mill_3</option>
+                <option value="room_1">room_1</option>
+                <option value="room_2">room_2</option>
+                <option value="room_3">room_3</option>
               </select>
 
 
               </div>
-            <div style={{display: 'flex', margin: 10}}>
-              <span style={{marginRight: 10, fontSize: 20}}>Hours: </span>
-              <select
-                  value={selects[i].startHour}
-                  onChange={(e) => handleStartInput( parseInt(e.target.value), i)}
-              >
-                {_.times(24, (i) => (
-                    <option value={i}>{i}</option>
-                ))}
-              </select>
-              <span> - </span>
-              <select
-                  value={selects[i].endHour}
-                  onChange={(e) => handleEndInput(parseInt(e.target.value),i)}
-              >
-                {_.times(24, (i) => (
-                    <option value={i}>{i}</option>
-                ))}
-              </select>
 
-            </div>
             </div>
             <button style={styles.xBtn} onClick={() => deleteSelects(i)}>
               x
@@ -175,7 +155,7 @@ export default function Archive() {
         <button
           onClick={() =>
             addSelects({
-              name: "mill_1",
+              name: "room_1",
               date: date.toISOString().split("T")[0],
               startHour: 8,
               endHour: 10,

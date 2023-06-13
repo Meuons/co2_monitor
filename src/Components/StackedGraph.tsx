@@ -1,10 +1,10 @@
 import * as React from "react";
 import Chart from "react-apexcharts";
 import colors from "../colors";
-import { dataObj, curveArr, ApexDatetime, dataNumArr, curveObj, ECO2Arr } from "../types";
+import { dataObj, curveArr, ApexDatetime, dataNumArr, curveObj, CO2Arr } from "../types";
 import { getData } from "../API/getData";
 import { useEffect, useState } from "react";
-
+import xAxis from "./xAxis";
 export default function StackedGraph(props: { parameters: curveArr }) {
   const parameterData = props.parameters;
 
@@ -13,35 +13,19 @@ export default function StackedGraph(props: { parameters: curveArr }) {
   const [options, setOptions] = useState<any>({});
   const colorArr: string[]= []
    const datetime: ApexDatetime = 'datetime'
-  const xAxis = () => {
-    const arr = [];
-    for (let i = 0; i < 24; i++) {
-      for (let j = 0; j < 60; j++) {
-        if (i < 10 && j < 10) {
-          arr.push("2018-09-19T0" + i + ":" + "0" + j + ":00.000Z");
-        } else if (i > 9 && j < 10) {
-          arr.push("2018-09-19T" + i + ":" + "0" + j + ":00.000Z");
-        } else if (i < 10 && j > 9) {
-          arr.push("2018-09-19T0" + i + ":" + j + ":00.000Z");
-        } else {
-          arr.push(`2018-09-19T${i}:${j}:00.000Z`);
-        }
-      }
-    }
-    return arr;
-  };
 
-  const fetch = (date: string, name: string, color: string) => {
+
+  const fetch = (date: string, room: string, color: string) => {
     const url =
-      "https://co2-server-app.herokuapp.com/timestamps/date/" +
-      date +
-      "/name/" +
-      name;
+    "http://localhost:3000/timestamps/date/" +
+    new Date(date).toLocaleDateString('sv-SE') +
+    "/room/" +
+    room;
 
     getData(url, async (result: any) => {
       const { data, error } = result;
 
-      sortData(data.set, color);
+      sortData(data, color);
       if (error) {
         // Handle error
         return;
@@ -55,24 +39,32 @@ export default function StackedGraph(props: { parameters: curveArr }) {
       fetch(new Date(item.date).toISOString().split("T")[0], item.name, item.color);
     });
   }, []);
-  function sortData(data: ECO2Arr, color: string) {
-    if (data) {
-      const mapCO2 = () =>
-        data.map((item, i) => {
-          if (item.ECO2 === 0 && i > 0) {
-            item.ECO2 = data[i - 1].ECO2;
-          }
+  function sortData(data: CO2Arr, color: string) { 
 
-          return item.ECO2;
+    if (data) {
+     const CO2Data: number[] = []
+
+        data.map((item, i) => {
+          if (item.ppm_co2 === 0 && i > 0) {
+            item.ppm_co2 = data[i - 1].ppm_co2;
+          }
+          const hour = new Date(item.time).getHours()
+          if(hour >= 9 && hour <= 17){
+            CO2Data.push(item.ppm_co2)
+          }
+       
         });
 
-      const CO2Data = mapCO2();
+  
+
       const obj: dataObj = {
-        name: data[0].DeviceName + " " + data[0].StampDate.split("T")[0],
+        name: data[0].room + " " + data[0].time.split("T")[0],
         data: CO2Data,
       };
+      console.log(obj)
       chartData.push(obj);
       colorArr.push(color)
+      console.log(xAxis())
       if (chartData.length == parameterData.length) {
         setOptions(
         {
@@ -138,11 +130,7 @@ export default function StackedGraph(props: { parameters: curveArr }) {
 
   return (
     <div key={count} style={{ width: "90vw" }}>
-      {chartData.length != parameterData.length ? (
-        <div>
-          <h1>Loading chart...</h1>
-        </div>
-      ) : (
+ 
         <Chart
           options={options}
           series={chartData}
@@ -150,7 +138,7 @@ export default function StackedGraph(props: { parameters: curveArr }) {
           height={350}
           width={"100%"}
         />
-      )}
+    
     </div>
   );
 }

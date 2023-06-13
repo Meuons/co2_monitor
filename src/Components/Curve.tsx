@@ -1,13 +1,13 @@
 import * as React from "react";
 import functionPlot from "function-plot";
-import {curveYObj, curveArr, dateObj, curveObj, deviceObj} from "../types";
+import {curveYObj, curveArr, dateObj, curveObj} from "../types";
 import {useEffect, useRef, useState} from "react";
 import axios from "axios";
-import {ECO2Arr} from "../types";
+import {CO2Arr} from "../types";
 import colors from "../colors";
 // @ts-ignore
 import PolynomialRegression from "ml-regression-polynomial";
-import { prototype } from "apexcharts";
+
 
 export default function Curve(props: { parameters: curveArr}) {
   const parameterData = props.parameters;
@@ -72,22 +72,22 @@ export default function Curve(props: { parameters: curveArr}) {
     )
   };
 
-  const getY = (data: ECO2Arr, start: number, end: number , i: number, color: string) => {
+  const getY = (data: CO2Arr, start: number, end: number , i: number, color: string) => {
     const y: number[] = [];
 
     data.map((item: curveYObj, i) => {
       if (start != null && end != null) {
         if (
-            new Date(item.StampDate).getHours() >
+            new Date(item.time).getHours() >
             start &&
-            new Date(item.StampDate).getHours() < end + 1
+            new Date(item.time).getHours() < end + 1
         ) {
 
-          if(item.ECO2 == 0){
-            y.push(data[i-1].ECO2)
+          if(item.ppm_co2 == 0){
+            y.push(data[i-1].ppm_co2)
 
           } else{
-            y.push(item.ECO2)
+            y.push(item.ppm_co2)
           }
         }
       }
@@ -133,8 +133,6 @@ export default function Curve(props: { parameters: curveArr}) {
       });
 
       if(equations.length == parameterData.length){
-        console.log(equations.length)
-        console.log(parameterData.length)
 setCount(count +1)
       }
     }
