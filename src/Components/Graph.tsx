@@ -29,7 +29,7 @@ export default function Graph(param: { date: string; room: string}) {
   };
 
   const url =
-    "http://localhost:3000/timestamps/date/" +
+    "https://co2-server-app.herokuapp.com/timestamps/date/" +
     new Date(param.date).toLocaleDateString('en-ca') +
     "/room/" +
     param.room;

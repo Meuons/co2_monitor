@@ -17,7 +17,7 @@ export default function StackedGraph(props: { parameters: curveArr }) {
 
   const fetch = (date: string, room: string, color: string) => {
     const url =
-    "http://localhost:3000/timestamps/date/" +
+    "https://co2-server-app.herokuapp.com/timestamps/date/" +
     new Date(date).toLocaleDateString('sv-SE') +
     "/room/" +
     room;

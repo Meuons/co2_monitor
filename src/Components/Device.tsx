@@ -7,7 +7,7 @@ import { stamp } from "../types";
 import { useState, useEffect, CSSProperties } from "react";
 import Graph from "./Graph";
 import { StylesDictionary } from "../StylesDictionary";
-const url = "http://localhost:3000/timestamps";
+const url = "https://co2-server-app.herokuapp.com/timestamps";
 
 const styles: StylesDictionary = {
   wrapper: {
