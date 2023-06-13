@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/co2_monitor/static/css/main.a32d5103.css",
-    "main.js": "/co2_monitor/static/js/main.81aa6a90.js",
-    "static/js/787.aa575a01.chunk.js": "/co2_monitor/static/js/787.aa575a01.chunk.js",
+    "main.css": "/co2_monitor/static/css/main.36548ba2.css",
+    "main.js": "/co2_monitor/static/js/main.008d81f5.js",
+    "static/js/496.46879374.chunk.js": "/co2_monitor/static/js/496.46879374.chunk.js",
     "index.html": "/co2_monitor/index.html",
-    "main.a32d5103.css.map": "/co2_monitor/static/css/main.a32d5103.css.map",
-    "main.81aa6a90.js.map": "/co2_monitor/static/js/main.81aa6a90.js.map",
-    "787.aa575a01.chunk.js.map": "/co2_monitor/static/js/787.aa575a01.chunk.js.map"
+    "main.36548ba2.css.map": "/co2_monitor/static/css/main.36548ba2.css.map",
+    "main.008d81f5.js.map": "/co2_monitor/static/js/main.008d81f5.js.map",
+    "496.46879374.chunk.js.map": "/co2_monitor/static/js/496.46879374.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.a32d5103.css",
-    "static/js/main.81aa6a90.js"
+    "static/css/main.36548ba2.css",
+    "static/js/main.008d81f5.js"
   ]
 }
